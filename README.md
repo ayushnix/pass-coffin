@@ -3,8 +3,8 @@
 A [pass](https://www.passwordstore.org/) extension that hides password store data inside a GPG
 encrypted file, which we'll call a coffin.
 
-`pass-coffin` is heavily inspired from [pass-grave](https://github.com/8go/pass-grave) and
-[pass-tomb](https://github.com/roddhjav/pass-tomb).
+`pass-coffin` is heavily inspired from [pass-tomb](https://github.com/roddhjav/pass-tomb) and
+[pass-grave](https://github.com/8go/pass-grave).
 
 ## Why should I use this instead of pass-tomb or pass-grave?
 
