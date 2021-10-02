@@ -6,8 +6,8 @@
 # A password store extension that hides data inside a GPG coffin
 # ------------------------------------------------------------------------------
 
-if [[ -x "${PASSWORD_STORE_EXTENSIONS_DIR}/coffin.bash" ]]; then
-  source "${PASSWORD_STORE_EXTENSIONS_DIR}/coffin.bash"
+if [[ -x "${EXTENSIONS}/coffin.bash" ]]; then
+  source "${EXTENSIONS}/coffin.bash"
 elif [[ -x "${SYSTEM_EXTENSION_DIR}/coffin.bash" ]]; then
   source "${SYSTEM_EXTENSION_DIR}/coffin.bash"
 else
