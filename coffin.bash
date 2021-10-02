@@ -11,6 +11,7 @@ set +x
 
 # list of variables and functions from password-store.sh used in this extension
 # PREFIX             - the location of the user password-store data
+# EXTENSIONS         - the location of user installed extensions
 # PROGRAM            - the name of password-store, pass
 # set_gpg_recipients - verify the GPG keyfile and set up GPG for encryption
 
@@ -89,20 +90,23 @@ coffin_die() {
 }
 
 coffin_help() {
-  printf '%s\n' "$PROGRAM ${0##*/} - hide password store in a coffin"
-  printf '\t%s\n' "If you're using $PROGRAM ${0##*/} for the first time, execute"
-  printf '\t%s\n' "'$PROGRAM close' as the first step"
+  printf '%s\n' "$PROGRAM coffin - hide password store in a coffin" ""
+  printf '%s\n' "If you're using $PROGRAM coffin for the first time, execute" ""
+  printf '\t%s\n' "\$ $PROGRAM close" ""
+  printf '%s\n' "as the first step" ""
   printf '%s\n' "Usage:"
-  printf '\t%s\n' "$PROGRAM close"
-  printf '\t%s\n' "    hide password store data by closing (creating) the coffin"
-  printf '\t%s\n' "$PROGRAM open [-t|--timer]"
-  printf '\t%s\n' "    reveal password store data by opening the coffin"
-  printf '\t%s\n' "    optionally, provide a time after which the coffin will be automatically closed"
-  printf '\t%s\n' "$PROGRAM timer"
-  printf '\t%s\n' "    show the time left before password store data is hidden"
-  printf '%s\n' "Options: $PROGRAM ${0##*/} [-h|--help] [-v|--version]"
-  printf '\t%s\n' "-h, --help:    print this help menu"
-  printf '\t%s\n' "-v, --version: print the version of $PROGRAM ${0##*/}"
+  printf '%s\n' "$PROGRAM close [-t|--timer]"
+  printf '%s\n' "    hide password store data by closing (creating) the coffin"
+  printf '%s\n' "    optionally, provide a time to close the coffin after a specific period of time"
+  printf '%s\n' "    rather than closing it immediately"
+  printf '%s\n' "$PROGRAM open [-t|--timer]"
+  printf '%s\n' "    reveal password store data by opening the coffin"
+  printf '%s\n' "    optionally, provide a time after which the coffin will be automatically closed"
+  printf '%s\n' "$PROGRAM timer"
+  printf '%s\n' "    show the time left before password store data is hidden" ""
+  printf '%s\n' "Options: $PROGRAM coffin [-h|--help] [-v|--version]"
+  printf '%s\n' "-h, --help:    print this help menu"
+  printf '%s\n' "-v, --version: print the version of $PROGRAM coffin" ""
   printf '%s\n' "For more details, visit https://github.com/ayushnix/pass-tessen"
 }
 
@@ -112,7 +116,7 @@ case "${1-}" in
     exit 0
     ;;
   -v | --version)
-    printf '%s\n' "$PROGRAM ${0##*/} version $COFFIN_VERSION"
+    printf '%s\n' "$PROGRAM coffin version $COFFIN_VERSION"
     exit 0
     ;;
   --)
