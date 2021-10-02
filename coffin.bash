@@ -6,14 +6,11 @@
 # A pass extension that prevents metadata exposure by encrypting everything
 # ------------------------------------------------------------------------------
 
-# password-store.sh doesn't use nounset, we will
-set -u
-
-# don't leak data if debug mode is enabled
+# don't leak potentially sensitive password-store data if debug mode is enabled
 set +x
 
 # list of variables and functions from password-store.sh used in this extension
-# PREFIX             - the location of password store
+# PREFIX             - the location of the user password-store data
 # PROGRAM            - the name of password-store, pass
 # set_gpg_recipients - verify the GPG keyfile and set up GPG for encryption
 
