@@ -45,9 +45,9 @@ coffin_close() {
     || coffin_die "Unable to create a directory for the coffin" >&2
   set_gpg_recipients "$COFFIN_DIR"
 
-  tar --exclude=".gpg-id" --exclude="$COFFIN_DIR" --exclude=".extensions" \
-    -c . | "$GPG" -e "${GPG_RECIPIENT_ARGS[@]}" -o "$COFFIN_FILE" \
-    "${GPG_OPTS[@]}" || coffin_die "Unable to create an encrypted GPG coffin"
+  tar c --exclude ".gpg-id" --exclude "$COFFIN_DIR" --exclude ".extensions" . \
+    | "$GPG" -e "${GPG_RECIPIENT_ARGS[@]}" -o "$COFFIN_FILE" "${GPG_OPTS[@]}" \
+    || coffin_die "Unable to create an encrypted GPG coffin"
 
   chmod 400 "$COFFIN_FILE" \
     || printf '%s\n' "Unable to make the encrypted coffin a readonly file" >&2
