@@ -25,28 +25,41 @@ COFFIN_TIME=""
 COFFIN_STATUS=""
 
 coffin_close() {
-  local pwd="$PWD"
-  cd "$PREFIX" > /dev/null 2>&1 || coffin_die "Password Store data not found. Exiting!"
+  COFFIN_STATUS="close"
 
-  if [[ -f "$COFFIN_FILE" ]]; then
-    coffin_die '%s\n' "A coffin already exists. Exiting!"
+  local pwd
+  if [[ -n "$PWD" ]]; then
+    pwd="$PWD"
+  else
+    printf '%s\n' "Unable to determine your current working directory. This is strange!" >&2
   fi
 
-  mkdir -p "$COFFIN_DIR" > /dev/null 2>&1 || coffin_die "Unable to create a coffin. Exiting!"
+  cd "$PREFIX" > /dev/null 2>&1 \
+    || coffin_die "Unable to find a password store directory"
+
+  if [[ -f "$COFFIN_FILE" ]]; then
+    coffin_die "An encrypted GPG coffin already exists"
+  fi
+
+  mkdir -p "$COFFIN_DIR" > /dev/null 2>&1 \
+    || coffin_die "Unable to create a directory for the coffin" >&2
   set_gpg_recipients "$COFFIN_DIR"
 
   tar --exclude=".gpg-id" --exclude="$COFFIN_DIR" --exclude=".extensions" \
     -c . | "$GPG" -e "${GPG_RECIPIENT_ARGS[@]}" -o "$COFFIN_FILE" \
-    "${GPG_OPTS[@]}" || coffin_die "Unable to create a coffin. Exiting!"
+    "${GPG_OPTS[@]}" || coffin_die "Unable to create an encrypted GPG coffin"
 
-  chmod 400 "$COFFIN_FILE" || printf '%s\n' "Unable to make the coffin read-only." >&2
+  chmod 400 "$COFFIN_FILE" \
+    || printf '%s\n' "Unable to make the encrypted coffin a readonly file" >&2
 
-  find . ! -name '.gpg-id' -name "./$COFFIN_DIR" ! -name "./$COFFIN_FILE" \
-    ! -name "./.extensions" -name "./.extensions/*" -delete \
-    || coffin_die "Unable to hide the password store data. Exiting!"
+  find . ! -name '.' ! -name '..' ! -name '.gpg-id' ! -path "./$COFFIN_DIR" \
+    ! -path "./$COFFIN_FILE" ! -path "./${EXTENSIONS##*/}" \
+    ! -path "./${EXTENSIONS##*/}/*" -delete \
+    || coffin_bail "Unable to finish creating a coffin. Trying to restore any changes."
 
-  printf '%s\n' "Your password store data is now hidden inside a coffin"
-  cd "$pwd" > /dev/null 2>&1 || exit 1
+  cd "$pwd" > /dev/null 2>&1 || cd "$HOME" || false
+
+  printf '%s\n' "Password Store data is now hidden inside a GPG coffin"
 }
 
 coffin_open() {
