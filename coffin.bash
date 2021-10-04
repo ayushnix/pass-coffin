@@ -171,7 +171,7 @@ coffin_help() {
   printf '%s\n' "For more details, visit https://github.com/ayushnix/pass-tessen"
 }
 
-if [[ "$COMMAND" == "coffin" ]]; then
+if [[ "$#" -eq 0 && "$COMMAND" == "coffin" ]]; then
   coffin_help
   exit 0
 fi
