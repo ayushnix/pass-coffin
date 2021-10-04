@@ -115,7 +115,7 @@ coffin_timer() {
   local status
 
   status="$(systemctl --user is-active "$PROGRAM-coffin".timer)"
-  if [[ "$status" == "active" && -z "$choice" || "$choice" == "status" ]]; then
+  if [[ "$status" == "active" && -z "$choice" ]]; then
     systemctl --user list-timers "$PROGRAM-coffin".timer \
       || coffin_die "Unable to print the timer status"
   elif [[ "$status" == "active" && "$choice" == "stop" ]]; then
@@ -165,9 +165,8 @@ coffin_help() {
   printf '%s\n' "    reveal password store data by opening the coffin"
   printf '%s\n' "    optionally, provide a valid systemd compatible time after which the coffin"
   printf '%s\n' "    will be automatically closed"
-  printf '%s\n' "$PROGRAM timer [status|stop]"
+  printf '%s\n' "$PROGRAM timer [stop]"
   printf '%s\n' "    show the time left before password store data is hidden"
-  printf '%s\n' "    'pass timer' and 'pass timer status' perform the same operation"
   printf '%s\n' "    'pass timer stop' will stop any active timers started by 'pass open -t'" ""
   printf '%s\n' "Options: $PROGRAM coffin [-h|--help] [-v|--version]"
   printf '%s\n' "-h, --help:    print this help menu"
@@ -212,7 +211,7 @@ while [[ "$#" -gt 0 ]]; do
       printf '%s\n' "$PROGRAM coffin version $COFFIN_VERSION"
       exit 0
       ;;
-    status | stop)
+    stop)
       if [[ "$COMMAND" == "timer" ]]; then
         break
       else
