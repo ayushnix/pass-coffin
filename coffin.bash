@@ -20,7 +20,9 @@ readonly COFFIN_VERSION="0.1"
 readonly COFFIN_NAME="coffin"
 readonly COFFIN_DIR=".$COFFIN_NAME"
 readonly COFFIN_FILE="$COFFIN_DIR/$COFFIN_NAME".tar.gpg
-TIMER=false
+COFFIN_TIMER=false
+COFFIN_TIME=""
+COFFIN_STATUS=""
 
 coffin_close() {
   local pwd="$PWD"
@@ -85,7 +87,7 @@ coffin_timer() {
 }
 
 coffin_die() {
-  printf '%s\n' "${1-}" >&2
+  printf '%s\n' "$1" >&2
   exit 1
 }
 
