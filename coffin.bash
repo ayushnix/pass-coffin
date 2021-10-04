@@ -117,12 +117,15 @@ coffin_timer() {
   status="$(systemctl --user is-active "$PROGRAM-coffin".timer)"
   if [[ "$status" == "active" && -z "$choice" || "$choice" == "status" ]]; then
     systemctl --user list-timers "$PROGRAM-coffin".timer \
-      || printf '%s\n' "Unable to print the timer status" >&2
+      || coffin_die "Unable to print the timer status"
   elif [[ "$status" == "active" && "$choice" == "stop" ]]; then
     systemctl --user stop "$PROGRAM-coffin".timer > /dev/null 2>&1 \
-      || printf '%s\n' "Unable to stop the timer" >&2
+      || coffin_die "Unable to stop the timer"
+    printf '%s\n' "[#] The timer to hide password store data has been stopped"
+  elif [[ "$status" == "inactive" && -z "$choice" ]]; then
+    coffin_die "The timer to hide password store isn't active"
   else
-    coffin_die "Either the timer isn't active or an incorrect command was executed"
+    coffin_die "An unknown error has occured. Please raise an issue on GitHub"
   fi
 }
 
