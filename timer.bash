@@ -15,4 +15,4 @@ else
   exit 1
 fi
 
-coffin_timer
+coffin_timer "$@"
