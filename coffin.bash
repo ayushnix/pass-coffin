@@ -92,7 +92,7 @@ coffin_open() {
 
   if "$COFFIN_TIMER"; then
     systemd-run --user -E PASSWORD_STORE_DIR="$PREFIX" -E PASSWORD_STORE_ENABLE_EXTENSIONS=true \
-      --on-active="$COFFIN_TIME" --unit="$PROGRAM-coffin" -G \
+      --on-active="$COFFIN_TIME" --timer-property=AccuracySec=100ms --unit="$PROGRAM-coffin" -G \
       "$(command -v "$PROGRAM")" close > /dev/null 2>&1 && flag=true \
       || printf '%s\n' "Unable to start a timer to close the coffin" >&2
   fi
