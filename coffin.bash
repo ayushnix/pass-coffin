@@ -59,7 +59,7 @@ coffin_close() {
 
   cd "$pwd" > /dev/null 2>&1 || cd "$HOME" || false
 
-  printf '%s\n' "Password Store data is now hidden inside a GPG coffin"
+  printf '%s\n' "[#] Password Store data is now hidden inside a GPG coffin"
 }
 
 coffin_open() {
@@ -116,9 +116,11 @@ coffin_timer() {
 
   status="$(systemctl --user is-active "$PROGRAM-coffin".timer)"
   if [[ "$status" == "active" && -z "$choice" || "$choice" == "status" ]]; then
-    systemctl --user list-timers "$PROGRAM-coffin".timer
+    systemctl --user list-timers "$PROGRAM-coffin".timer \
+      || printf '%s\n' "Unable to print the timer status" >&2
   elif [[ "$status" == "active" && "$choice" == "stop" ]]; then
-    systemctl --user stop "$PROGRAM-coffin".timer
+    systemctl --user stop "$PROGRAM-coffin".timer > /dev/null 2>&1 \
+      || printf '%s\n' "Unable to stop the timer" >&2
   else
     coffin_die "Either the timer isn't active or an incorrect command was executed"
   fi
