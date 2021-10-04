@@ -47,14 +47,14 @@ coffin_close() {
 
   tar c --exclude ".gpg-id" --exclude "$COFFIN_DIR" --exclude ".extensions" . \
     | "$GPG" -e "${GPG_RECIPIENT_ARGS[@]}" -o "$COFFIN_FILE" "${GPG_OPTS[@]}" \
-    || coffin_die "Unable to create an encrypted GPG coffin"
+      > /dev/null 2>&1 || coffin_die "Unable to create an encrypted GPG coffin"
 
   chmod 400 "$COFFIN_FILE" \
     || printf '%s\n' "Unable to make the encrypted coffin a readonly file" >&2
 
   find . ! -name '.' ! -name '..' ! -name '.gpg-id' ! -path "./$COFFIN_DIR" \
     ! -path "./$COFFIN_FILE" ! -path "./${EXTENSIONS##*/}" \
-    ! -path "./${EXTENSIONS##*/}/*" -delete \
+    ! -path "./${EXTENSIONS##*/}/*" -delete > /dev/null 2>&1 \
     || coffin_bail "Unable to finish creating a coffin. Trying to restore any changes."
 
   cd "$pwd" > /dev/null 2>&1 || cd "$HOME" || false
