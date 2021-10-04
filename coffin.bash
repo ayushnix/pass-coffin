@@ -63,22 +63,24 @@ coffin_close() {
 }
 
 coffin_open() {
-  local time="${1-}"
-  shift
-  local pwd="$PWD"
-  cd "$PREFIX" || coffin_die "Password Store data not found. Exiting!"
+  COFFIN_STATUS="open"
 
-  if ! [[ -f "$COFFIN_FILE" ]]; then
-    coffin_die "Unable to find a coffin. Exiting!"
+  local pwd
+  if [[ -n "$PWD" ]]; then
+    pwd="$PWD"
+  else
+    printf '%s\n' "Unable to determine your current working directory. This is strange!" >&2
   fi
 
-  $GPG -d "${GPG_OPTS[@]}" "$COFFIN_FILE" | tar x \
-    || coffin_die "Unable to retrieve data from the coffin. Exiting!"
+  cd "$PREFIX" > /dev/null 2>&1 \
+    || coffin_die "Unable to find a password store directory"
 
-  rm -f "$COFFIN_FILE" || coffin_die "Unable to delete the coffin. Exiting!"
-  rm -f "$COFFIN_DIR" || false
-
-  printf '%s' "${0##*/} has retrieved your password store data from the coffin"
+  if [[ -f "$COFFIN_FILE" ]]; then
+    $GPG -d "${GPG_OPTS[@]}" "$COFFIN_FILE" | tar x \
+      || coffin_bail "Unable to retrieve data from the encrypted coffin"
+  else
+    coffin_die "Unable to find an encrypted GPG coffin"
+  fi
 
   if "$TIMER"; then
     systemd-run --user --on-active="$time" --unit="$PROGRAM-${0##*/}" \
@@ -87,7 +89,7 @@ coffin_open() {
     }
   fi
 
-  cd "$pwd" > /dev/null 2>&1 || exit 1
+  cd "$pwd" > /dev/null 2>&1 || cd "$HOME" || false
 }
 
 coffin_timer() {
