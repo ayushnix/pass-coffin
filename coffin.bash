@@ -104,11 +104,16 @@ coffin_open() {
 }
 
 coffin_timer() {
+  local choice="$1"
   local status
 
-  status="$(systemctl --user is-active "$PROGRAM-${0##*/}".timer)"
-  if [[ "$status" == "active" ]]; then
-    systemctl --user list-timers "$PROGRAM-${0##*/}".timer
+  status="$(systemctl --user is-active "$PROGRAM-coffin".timer)"
+  if [[ "$status" == "active" && -z "$choice" || "$choice" == "status" ]]; then
+    systemctl --user list-timers "$PROGRAM-coffin".timer
+  elif [[ "$status" == "active" && "$choice" == "stop" ]]; then
+    systemctl --user stop "$PROGRAM-coffin".timer
+  else
+    coffin_die "Either the timer isn't active or an incorrect command was executed"
   fi
 }
 
