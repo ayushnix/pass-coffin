@@ -13,7 +13,7 @@
 # set_gpg_recipients - verify the GPG keyfile and set up GPG for encryption
 
 # initialize the global variables
-readonly COFFIN_VERSION="1.0"
+readonly COFFIN_VERSION="1.0.1"
 readonly COFFIN_NAME="coffin"
 readonly COFFIN_DIR=".$COFFIN_NAME"
 readonly COFFIN_FILE="$COFFIN_DIR/$COFFIN_NAME".tar.gpg
@@ -168,7 +168,7 @@ coffin_help() {
   printf '%s\n' "Options: $PROGRAM coffin [-h|--help] [-v|--version]"
   printf '%s\n' "-h, --help:    print this help menu"
   printf '%s\n' "-v, --version: print the version of $PROGRAM coffin" ""
-  printf '%s\n' "For more details, visit https://github.com/ayushnix/pass-tessen"
+  printf '%s\n' "For more details, visit https://github.com/ayushnix/pass-coffin"
 }
 
 if [[ "$#" -eq 0 && "$COMMAND" == "coffin" ]]; then
