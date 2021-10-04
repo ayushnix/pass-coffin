@@ -111,20 +111,58 @@ coffin_help() {
   printf '%s\n' "For more details, visit https://github.com/ayushnix/pass-tessen"
 }
 
-case "${1-}" in
-  -h | --help)
-    coffin_help
-    exit 0
-    ;;
-  -v | --version)
-    printf '%s\n' "$PROGRAM coffin version $COFFIN_VERSION"
-    exit 0
-    ;;
-  --)
-    shift
-    ;;
-  *)
-    coffin_die "Invalid argument detected. Exiting!"
-    ;;
-esac
-shift
+if [[ "$COMMAND" == "coffin" ]]; then
+  coffin_help
+  exit 0
+fi
+
+while [[ "$#" -gt 0 ]]; do
+  _opt="$1"
+  case "$_opt" in
+    -t | --timer)
+      if [[ "$COMMAND" == "open" ]]; then
+        [[ "$#" -lt 2 ]] && {
+          printf '%s\n' "Please specify a valid systemd compatible time format" >&2
+          exit 1
+        }
+        COFFIN_TIMER=true
+        COFFIN_TIME="$2"
+      else
+        coffin_die "invalid argument detected"
+      fi
+      shift
+      ;;
+    --timer=*)
+      if [[ "$COMMAND" == "open" ]]; then
+        COFFIN_TIMER=true
+        COFFIN_TIME="${_opt##--timer=}"
+      else
+        coffin_die "invalid argument detected"
+      fi
+      ;;
+    -h | --help)
+      coffin_help
+      exit 0
+      ;;
+    -v | --version)
+      printf '%s\n' "$PROGRAM coffin version $COFFIN_VERSION"
+      exit 0
+      ;;
+    status | stop)
+      if [[ "$COMMAND" == "timer" ]]; then
+        break
+      else
+        coffin_die "invalid argument detected"
+      fi
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      coffin_die "invalid argument detected"
+      ;;
+  esac
+  shift
+done
+unset -v _opt
