@@ -65,7 +65,9 @@ coffin_close() {
 coffin_open() {
   COFFIN_STATUS="open"
 
-  local pwd
+  local pwd flag
+  flag=false
+
   if [[ -n "$PWD" ]]; then
     pwd="$PWD"
   else
@@ -91,13 +93,18 @@ coffin_open() {
     printf '%s\n' " Please delete $PREFIX/$COFFIN_DIR manually if it exists." >&2
   }
 
-  printf '%s\n' "Password Store data has been retrieved from the GPG coffin"
-
   if "$COFFIN_TIMER"; then
     systemd-run --user -E PASSWORD_STORE_DIR="$PREFIX" -E PASSWORD_STORE_ENABLE_EXTENSIONS=true \
       --on-active="$COFFIN_TIME" --unit="$PROGRAM-coffin" -G \
-      "$(command -v "$PROGRAM")" close > /dev/null 2>&1 \
+      "$(command -v "$PROGRAM")" close > /dev/null 2>&1 && flag=true \
       || printf '%s\n' "Unable to start a timer to close the coffin" >&2
+  fi
+
+  if "$flag"; then
+    printf '%s\n' "[#] Password Store data has been retrieved from the GPG coffin"
+    printf '%s\n' "[#] Password Store will be hidden inside a coffin after $COFFIN_TIME"
+  else
+    printf '%s\n' "[#] Password Store data has been retrieved from the GPG coffin"
   fi
 
   cd "$pwd" > /dev/null 2>&1 || cd "$HOME" || false
