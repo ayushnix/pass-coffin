@@ -6,9 +6,6 @@
 # A pass extension that prevents metadata exposure by encrypting everything
 # ------------------------------------------------------------------------------
 
-# don't leak potentially sensitive password-store data if debug mode is enabled
-set +x
-
 # list of variables and functions from password-store.sh used in this extension
 # PREFIX             - the location of the user password-store data
 # EXTENSIONS         - the location of user installed extensions
