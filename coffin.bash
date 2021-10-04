@@ -82,11 +82,6 @@ coffin_open() {
     coffin_die "Unable to find an encrypted GPG coffin"
   fi
 
-  if "$TIMER"; then
-    systemd-run --user --on-active="$time" --unit="$PROGRAM-${0##*/}" \
-      "$(command -v "$PROGRAM")" close > /dev/null 2>&1 || {
-      printf '%s\n' "unable to start the timer" >&2
-    }
   rm -f "$COFFIN_FILE" || {
     printf '%s' "Unable to delete the encrypted coffin." >&2
     printf '%s\n' " Please delete $PREFIX/$COFFIN_FILE manually if it exists." >&2
@@ -95,6 +90,14 @@ coffin_open() {
     printf '%s' "Unable to delete the directory which holds the coffin." >&2
     printf '%s\n' " Please delete $PREFIX/$COFFIN_DIR manually if it exists." >&2
   }
+
+  printf '%s\n' "Password Store data has been retrieved from the GPG coffin"
+
+  if "$COFFIN_TIMER"; then
+    systemd-run --user -E PASSWORD_STORE_DIR="$PREFIX" -E PASSWORD_STORE_ENABLE_EXTENSIONS=true \
+      --on-active="$COFFIN_TIME" --unit="$PROGRAM-coffin" -G \
+      "$(command -v "$PROGRAM")" close > /dev/null 2>&1 \
+      || printf '%s\n' "Unable to start a timer to close the coffin" >&2
   fi
 
   cd "$pwd" > /dev/null 2>&1 || cd "$HOME" || false
