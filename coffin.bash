@@ -87,6 +87,14 @@ coffin_open() {
       "$(command -v "$PROGRAM")" close > /dev/null 2>&1 || {
       printf '%s\n' "unable to start the timer" >&2
     }
+  rm -f "$COFFIN_FILE" || {
+    printf '%s' "Unable to delete the encrypted coffin." >&2
+    printf '%s\n' " Please delete $PREFIX/$COFFIN_FILE manually if it exists." >&2
+  }
+  rmdir "$COFFIN_DIR" || {
+    printf '%s' "Unable to delete the directory which holds the coffin." >&2
+    printf '%s\n' " Please delete $PREFIX/$COFFIN_DIR manually if it exists." >&2
+  }
   fi
 
   cd "$pwd" > /dev/null 2>&1 || cd "$HOME" || false
