@@ -1,0 +1,25 @@
+PASSWORD_STORE_EXTENSION_COMMANDS+=(coffin open close timer)
+
+__password_store_extension_complete_coffin() {
+  local args=(-h --help -v --version)
+  COMPREPLY+=($(compgen -W "${args[*]}" -- ${cur}))
+  _pass_complete_entries
+}
+
+__password_store_extension_complete_close() {
+  local args=(-h --help -v --version)
+  COMPREPLY+=($(compgen -W "${args[*]}" -- ${cur}))
+  _pass_complete_entries
+}
+
+__password_store_extension_complete_open() {
+  local args=(-t --timer --timer= -h --help -v --version)
+  COMPREPLY+=($(compgen -W "${args[*]}" -- ${cur}))
+  _pass_complete_entries
+}
+
+__password_store_extension_complete_timer() {
+  local args=(stop -h --help -v --version)
+  COMPREPLY+=($(compgen -W "${args[*]}" -- ${cur}))
+  _pass_complete_entries
+}
