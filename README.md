@@ -53,6 +53,9 @@ export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 
 Password Store extensions will not work if this environment variable isn't set.
 
+Since pass-coffin has a similar interface as pass-tomb, both packages cannot exist at the same time
+and will conflict each other. Please install either pass-tomb or pass-coffin, not both.
+
 ### Dependencies
 
 - [pass](https://git.zx2c4.com/password-store/) and its dependencies like bash, coreutils, gpg,
