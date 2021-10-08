@@ -22,6 +22,7 @@ COFFIN_TIME=""
 COFFIN_STATUS=""
 
 coffin_close() {
+  local timer_status
   COFFIN_STATUS="close"
 
   local pwd
@@ -53,6 +54,11 @@ coffin_close() {
     ! -path "./$COFFIN_FILE" ! -path "./${EXTENSIONS##*/}" \
     ! -path "./${EXTENSIONS##*/}/*" -delete > /dev/null 2>&1 \
     || coffin_bail "Unable to finish creating a coffin. Trying to restore any changes."
+
+  timer_status="$(systemctl --user is-active "$PROGRAM-coffin".timer 2> /dev/null)"
+  if [[ "$timer_status" == "active" ]]; then
+    systemctl --user stop "$PROGRAM-coffin".timer > /dev/null 2>&1
+  fi
 
   cd "$pwd" > /dev/null 2>&1 || cd "$HOME" || false
 
