@@ -13,7 +13,7 @@
 # set_gpg_recipients - verify the GPG keyfile and set up GPG for encryption
 
 # initialize the global variables
-readonly COFFIN_VERSION="1.0.1"
+readonly COFFIN_VERSION="1.1"
 readonly COFFIN_NAME="coffin"
 readonly COFFIN_DIR=".$COFFIN_NAME"
 readonly COFFIN_FILE="$COFFIN_DIR/$COFFIN_NAME".tar.gpg

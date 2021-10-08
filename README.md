@@ -85,9 +85,9 @@ which you probably should.
 ### Stable Release
 
 ```
-wget https://github.com/ayushnix/pass-coffin/releases/download/v1.0.1/pass-coffin-1.0.1.tar.gz
-tar xvzf pass-coffin-1.0.1.tar.gz
-cd pass-coffin-1.0.1
+wget https://github.com/ayushnix/pass-coffin/releases/download/v1.1/pass-coffin-1.1.tar.gz
+tar xvzf pass-coffin-1.1.tar.gz
+cd pass-coffin-1.1
 sudo make install
 ```
 
