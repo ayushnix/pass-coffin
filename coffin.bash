@@ -100,6 +100,10 @@ coffin_close() {
       || coffin_warn "unable to stop the timer to close the coffin"
   fi
 
+  # clear the password from gpg-agent
+  gpg-connect-agent reloadagent /bye > /dev/null 2>&1 \
+    || coffin_warn "unable to clear password from gpg-agent"
+
   printf '%s\n' "[#] Password Store data is now hidden inside a GPG coffin"
 }
 
