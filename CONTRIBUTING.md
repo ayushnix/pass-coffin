@@ -9,7 +9,7 @@ If you're interested in contributing and making
 - your bash code has been formatted using [shfmt](https://github.com/mvdan/sh) with the following
   settings
 
-  `-i 2 -ci -sr -bn`
+  `-s -i 2 -ci -sr -bn`
 
 Please raise an [issue](https://github.com/ayushnix/pass-coffin/issues/new/choose) if you have any
 questions.
