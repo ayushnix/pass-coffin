@@ -132,25 +132,6 @@ coffin_timer() {
   fi
 }
 
-coffin_bail() {
-  printf '%s\n' "$1" >&2
-
-  if [[ -f $COFFIN_FILE && $COFFIN_STATUS == "close" ]]; then
-    $GPG -d "${GPG_OPTS[@]}" "$COFFIN_FILE" | tar x \
-      || coffin_die "An unknown error has occured. Please raise an issue on GitHub"
-    rm -f "$COFFIN_FILE" \
-      || coffin_die "An unknown error has occured. Please raise an issue on GitHub"
-    rmdir "$COFFIN_DIR" || false
-  elif [[ -f $COFFIN_FILE && $COFFIN_STATUS == "open" ]]; then
-    $GPG -d "${GPG_OPTS[@]}" "$COFFIN_FILE" \
-      || coffin_die "An unknown error has occured. Please raise an issue on GitHub"
-    tar x "${COFFIN_FILE%.gpg}" \
-      || coffin_die "An unknown error has occured. Please raise an issue on GitHub"
-  else
-    coffin_die "An unknown error has occured. Please raise an issue on GitHub"
-  fi
-}
-
 coffin_die() {
   printf '%s\n' "$1" >&2
   exit 1
