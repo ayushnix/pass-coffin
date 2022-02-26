@@ -73,8 +73,10 @@ coffin_close() {
   fi
   set +o pipefail
 
-  chmod 400 "$COFFIN_FILE" \
-    || printf '%s\n' "Unable to make the encrypted coffin a readonly file" >&2
+  chmod 400 "$coffin_file" \
+    || coffin_warn "unable to make the coffin a readonly file"
+  chmod 400 "$coffin_file.sig" \
+    || coffin_warn "unable to make the coffin signature a readonly file"
 
   find . ! -name '.' ! -name '..' ! -name '.gpg-id' ! -path "./$COFFIN_DIR" \
     ! -path "./$COFFIN_FILE" ! -path "./${EXTENSIONS##*/}" \
