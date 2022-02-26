@@ -78,10 +78,19 @@ coffin_close() {
   chmod 400 "$coffin_file.sig" \
     || coffin_warn "unable to make the coffin signature a readonly file"
 
-  find . ! -name '.' ! -name '..' ! -name '.gpg-id' ! -path "./$COFFIN_DIR" \
-    ! -path "./$COFFIN_FILE" ! -path "./${EXTENSIONS##*/}" \
-    ! -path "./${EXTENSIONS##*/}/*" -delete > /dev/null 2>&1 \
-    || coffin_bail "Unable to finish creating a coffin. Trying to restore any changes."
+  # delete the remaining data inside PREFIX (PASSWORD_STORE_DIR)
+  # CAVEAT: pass init supports specifying different .gpg-id files for different
+  # subdirectories
+  # however, since we're not modifying the password store itself, using just
+  # the .gpg-id in PASSWORD_STORE_DIR to create the coffin sounds fine but I'd
+  # like to know if I'm missing something
+  # -delete isn't supposed to delete directories unless they're empty but this
+  # does? probably because -delete implies -depth and files end up getting
+  # deleted before directories
+  find . ! -name '.' ! -name '..' ! -name '.gpg-id' ! -name '.gpg-id.sig' \
+    ! -path "./$coffin_dir" ! -path "./$coffin_file" ! -path "./$coffin_file.sig" \
+    ! -path "./$extbase" ! -path "./$extbase/*" -delete > /dev/null 2>&1 \
+    || coffin_die "unable to hide the password store files"
 
   timer_status="$(systemctl --user is-active "$PROGRAM-coffin".timer 2> /dev/null)"
   if [[ $timer_status == "active" ]]; then
