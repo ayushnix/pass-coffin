@@ -11,7 +11,7 @@ if [[ -x "${EXTENSIONS}/coffin.bash" ]]; then
 elif [[ -x "${SYSTEM_EXTENSION_DIR}/coffin.bash" ]]; then
   source "${SYSTEM_EXTENSION_DIR}/coffin.bash"
 else
-  printf '%s\n' "Unable to load pass coffin. Exiting!" >&2
+  printf '%s\n' "unable to load pass coffin, exiting!" >&2
   exit 1
 fi
 
