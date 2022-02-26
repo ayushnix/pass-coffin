@@ -92,9 +92,12 @@ coffin_close() {
     ! -path "./$extbase" ! -path "./$extbase/*" -delete > /dev/null 2>&1 \
     || coffin_die "unable to hide the password store files"
 
+  # if the timer to close the coffin is active, stop it
+  local timer_status
   timer_status="$(systemctl --user is-active "$PROGRAM-coffin".timer 2> /dev/null)"
   if [[ $timer_status == "active" ]]; then
-    systemctl --user stop "$PROGRAM-coffin".timer > /dev/null 2>&1
+    systemctl --user stop "$PROGRAM-coffin".timer > /dev/null 2>&1 \
+      || coffin_warn "unable to stop the timer to close the coffin"
   fi
 
   printf '%s\n' "[#] Password Store data is now hidden inside a GPG coffin"
