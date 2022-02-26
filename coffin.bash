@@ -104,7 +104,13 @@ coffin_close() {
   gpg-connect-agent reloadagent /bye > /dev/null 2>&1 \
     || coffin_warn "unable to clear password from gpg-agent"
 
-  printf '%s\n' "[#] Password Store data is now hidden inside a GPG coffin"
+  if [[ -n $PASSWORD_STORE_SIGNING_KEY ]] && [[ -n $key ]]; then
+    printf "%s\n" "password store data has been signed and buried inside a coffin"
+  else
+    printf "%s\n" "password store data has been buried inside a coffin"
+  fi
+
+  unset -v extbase timer_status key signing_keys
 }
 
 coffin_open() {
