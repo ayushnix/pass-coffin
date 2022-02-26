@@ -52,9 +52,26 @@ coffin_close() {
   local extbase
   extbase="$(coffin_basename "$EXTENSIONS")"
 
-  tar c --exclude ".gpg-id" --exclude "$COFFIN_DIR" --exclude ".extensions" . \
-    | "$GPG" -e "${GPG_RECIPIENT_ARGS[@]}" -o "$COFFIN_FILE" "${GPG_OPTS[@]}" \
-      > /dev/null 2>&1 || coffin_die "Unable to create an encrypted GPG coffin"
+  # tar and encrypt the password store data
+  set -o pipefail
+  tar c --exclude ".gpg-id" --exclude ".gpg-id.sig" --exclude "$coffin_dir" --exclude "$extbase" . \
+    | "$GPG" -e "${GPG_RECIPIENT_ARGS[@]}" -o "$coffin_file" "${GPG_OPTS[@]}" \
+      > /dev/null 2>&1 || coffin_die "unable to create an encrypted coffin"
+  # sign the coffin
+  # borrowed from password-store.sh from the cmd_init function
+  local key
+  local -a signing_keys
+  if [[ -n $PASSWORD_STORE_SIGNING_KEY ]]; then
+    for key in $PASSWORD_STORE_SIGNING_KEY; do
+      signing_keys+=(--default-key "$key")
+    done
+    "$GPG" "${GPG_OPTS[@]}" "${signing_keys[@]}" --detach-sign "$coffin_file" \
+      || coffin_die "unable to sign the coffin"
+    key="$("$GPG" "${GPG_OPTS[@]}" --verify --status-fd=1 "$coffin_file".sig "$coffin_file" 2> /dev/null \
+      | sed -n 's/^\[GNUPG:\] VALIDSIG [A-F0-9]\{40\} .* \([A-F0-9]\{40\}\)$/\1/p')"
+    [[ -n $key ]] || coffin_die "unable to sign the coffin"
+  fi
+  set +o pipefail
 
   chmod 400 "$COFFIN_FILE" \
     || printf '%s\n' "Unable to make the encrypted coffin a readonly file" >&2
