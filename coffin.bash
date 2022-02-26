@@ -17,6 +17,11 @@ readonly coffin_version="1.2.0"
 readonly coffin_name="coffin"
 readonly coffin_dir=".$coffin_name"
 readonly coffin_file="$coffin_dir/$coffin_name".tar.gpg
+# red color for errors
+readonly coffin_red="\e[31m"
+# yellow color for warnings
+readonly coffin_yel="\e[33m"
+readonly coffin_res="\e[0m"
 coffin_time=""
 
 coffin_close() {
@@ -155,8 +160,20 @@ coffin_basename() {
   unset -v tmp
 }
 
+coffin_warn() {
+  if [[ -n $NO_COLOR ]]; then
+    printf "%s\n" "$1" >&2
+  else
+    printf "%b%s%b\n" "$coffin_yel" "$1" "$coffin_res" >&2
+  fi
+}
+
 coffin_die() {
-  printf '%s\n' "$1" >&2
+  if [[ -n $NO_COLOR ]]; then
+    printf "%s\n" "$1" >&2
+  else
+    printf "%b%s%b\n" "$coffin_red" "$1" "$coffin_res" >&2
+  fi
   exit 1
 }
 
