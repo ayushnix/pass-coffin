@@ -13,13 +13,11 @@
 # set_gpg_recipients - verify the GPG keyfile and set up GPG for encryption
 
 # initialize the global variables
-readonly COFFIN_VERSION="1.1"
-readonly COFFIN_NAME="coffin"
-readonly COFFIN_DIR=".$COFFIN_NAME"
-readonly COFFIN_FILE="$COFFIN_DIR/$COFFIN_NAME".tar.gpg
-COFFIN_TIMER=false
-COFFIN_TIME=""
-COFFIN_STATUS=""
+readonly coffin_version="1.2.0"
+readonly coffin_name="coffin"
+readonly coffin_dir=".$coffin_name"
+readonly coffin_file="$coffin_dir/$coffin_name".tar.gpg
+coffin_time=""
 
 coffin_close() {
   local timer_status
