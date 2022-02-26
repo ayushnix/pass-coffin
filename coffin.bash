@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Copyright (C) 2021 Ayush Agarwal <ayush at fastmail dot in>
+# Copyright (C) 2021 Ayush Agarwal <ayushnix at fastmail dot com>
 #
 # pass coffin - Password Store Extension (https://www.passwordstore.org)
 # A pass extension that prevents metadata exposure by encrypting everything
