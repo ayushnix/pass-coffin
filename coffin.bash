@@ -25,19 +25,32 @@ readonly coffin_res="\e[0m"
 coffin_time=""
 
 coffin_close() {
-  local timer_status
-  COFFIN_STATUS="close"
-
-  cd "$PREFIX" > /dev/null 2>&1 \
-    || coffin_die "Unable to find a password store directory"
-
-  if [[ -f $COFFIN_FILE ]]; then
-    coffin_die "An encrypted GPG coffin already exists"
+  # if the PREFIX (PASSWORD_STORE_DIR) exists, cd into it
+  if [[ -d $PREFIX ]]; then
+    cd "$PREFIX" > /dev/null 2>&1 \
+      || coffin_die "unable to open the password store dir"
   fi
 
-  mkdir -p "$COFFIN_DIR" > /dev/null 2>&1 \
-    || coffin_die "Unable to create a directory for the coffin" >&2
-  set_gpg_recipients "$COFFIN_DIR"
+  # if the encrypted coffin already exists, exit
+  if [[ -f $coffin_file ]]; then
+    coffin_die "an encrypted coffin already exists"
+  fi
+
+  # create the dir for the coffin
+  mkdir -p "$coffin_dir" > /dev/null 2>&1 \
+    || coffin_die "unable to create a directory for the coffin"
+
+  # this function accepts a dir, checks if there's a different .gpg-id for the
+  # dir and if not found, it ends up using the .gpg-id in PASSWORD_STORE_DIR
+  # and initializes the gpg variables we'll need to create the coffin and sign
+  # it
+  set_gpg_recipients "$coffin_dir"
+
+  # get the basename of the extensions dir
+  # extensions won't be empty because password-store.sh sets it to a default
+  # value of $PREFIX/.extensions if PASSWORD_STORE_EXTENSIONS_DIR isn't set
+  local extbase
+  extbase="$(coffin_basename "$EXTENSIONS")"
 
   tar c --exclude ".gpg-id" --exclude "$COFFIN_DIR" --exclude ".extensions" . \
     | "$GPG" -e "${GPG_RECIPIENT_ARGS[@]}" -o "$COFFIN_FILE" "${GPG_OPTS[@]}" \
