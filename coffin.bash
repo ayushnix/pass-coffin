@@ -28,13 +28,6 @@ coffin_close() {
   local timer_status
   COFFIN_STATUS="close"
 
-  local pwd
-  if [[ -n $PWD ]]; then
-    pwd="$PWD"
-  else
-    printf '%s\n' "Unable to determine your current working directory. This is strange!" >&2
-  fi
-
   cd "$PREFIX" > /dev/null 2>&1 \
     || coffin_die "Unable to find a password store directory"
 
@@ -63,8 +56,6 @@ coffin_close() {
     systemctl --user stop "$PROGRAM-coffin".timer > /dev/null 2>&1
   fi
 
-  cd "$pwd" > /dev/null 2>&1 || cd "$HOME" || false
-
   printf '%s\n' "[#] Password Store data is now hidden inside a GPG coffin"
 }
 
@@ -73,12 +64,6 @@ coffin_open() {
 
   local pwd flag
   flag=false
-
-  if [[ -n $PWD ]]; then
-    pwd="$PWD"
-  else
-    printf '%s\n' "Unable to determine your current working directory. This is strange!" >&2
-  fi
 
   cd "$PREFIX" > /dev/null 2>&1 \
     || coffin_die "Unable to find a password store directory"
@@ -112,8 +97,6 @@ coffin_open() {
   else
     printf '%s\n' "[#] Password Store data has been retrieved from the GPG coffin"
   fi
-
-  cd "$pwd" > /dev/null 2>&1 || cd "$HOME" || false
 }
 
 coffin_timer() {
