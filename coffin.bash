@@ -132,6 +132,31 @@ coffin_timer() {
   fi
 }
 
+coffin_head() {
+  local -a line
+
+  mapfile -tn "$1" line < "$2"
+  printf "%s\n" "${line[@]}"
+
+  unset -v line
+}
+
+coffin_basename() {
+  local tmp
+
+  # remove everything except the trailing forward slash, if it exists
+  tmp="${1##*[!/]}"
+  # remove the trailing forward slash, if it was found
+  tmp="${1%"$tmp"}"
+  # remove the everything except the name of the file/dir
+  tmp="${tmp##*/}"
+  # print the name of the file/dir and if it's empty, print `/` because that's
+  # the only case when $tmp would become empty
+  printf "%s\n" "${tmp:-/}"
+
+  unset -v tmp
+}
+
 coffin_die() {
   printf '%s\n' "$1" >&2
   exit 1
