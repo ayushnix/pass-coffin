@@ -26,7 +26,7 @@ coffin_close() {
   COFFIN_STATUS="close"
 
   local pwd
-  if [[ -n "$PWD" ]]; then
+  if [[ -n $PWD ]]; then
     pwd="$PWD"
   else
     printf '%s\n' "Unable to determine your current working directory. This is strange!" >&2
@@ -35,7 +35,7 @@ coffin_close() {
   cd "$PREFIX" > /dev/null 2>&1 \
     || coffin_die "Unable to find a password store directory"
 
-  if [[ -f "$COFFIN_FILE" ]]; then
+  if [[ -f $COFFIN_FILE ]]; then
     coffin_die "An encrypted GPG coffin already exists"
   fi
 
@@ -56,7 +56,7 @@ coffin_close() {
     || coffin_bail "Unable to finish creating a coffin. Trying to restore any changes."
 
   timer_status="$(systemctl --user is-active "$PROGRAM-coffin".timer 2> /dev/null)"
-  if [[ "$timer_status" == "active" ]]; then
+  if [[ $timer_status == "active" ]]; then
     systemctl --user stop "$PROGRAM-coffin".timer > /dev/null 2>&1
   fi
 
@@ -71,7 +71,7 @@ coffin_open() {
   local pwd flag
   flag=false
 
-  if [[ -n "$PWD" ]]; then
+  if [[ -n $PWD ]]; then
     pwd="$PWD"
   else
     printf '%s\n' "Unable to determine your current working directory. This is strange!" >&2
@@ -80,7 +80,7 @@ coffin_open() {
   cd "$PREFIX" > /dev/null 2>&1 \
     || coffin_die "Unable to find a password store directory"
 
-  if [[ -f "$COFFIN_FILE" ]]; then
+  if [[ -f $COFFIN_FILE ]]; then
     $GPG -d "${GPG_OPTS[@]}" "$COFFIN_FILE" | tar x \
       || coffin_bail "Unable to retrieve data from the encrypted coffin"
   else
@@ -118,14 +118,14 @@ coffin_timer() {
   local status
 
   status="$(systemctl --user is-active "$PROGRAM-coffin".timer)"
-  if [[ "$status" == "active" && -z "$choice" ]]; then
+  if [[ $status == "active" && -z $choice ]]; then
     systemctl --user list-timers "$PROGRAM-coffin".timer \
       || coffin_die "Unable to print the timer status"
-  elif [[ "$status" == "active" && "$choice" == "stop" ]]; then
+  elif [[ $status == "active" && $choice == "stop" ]]; then
     systemctl --user stop "$PROGRAM-coffin".timer > /dev/null 2>&1 \
       || coffin_die "Unable to stop the timer"
     printf '%s\n' "[#] The timer to hide password store data has been stopped"
-  elif [[ "$status" == "inactive" && -z "$choice" ]]; then
+  elif [[ $status == "inactive" && -z $choice ]]; then
     coffin_die "The timer to hide password store isn't active"
   else
     coffin_die "An unknown error has occured. Please raise an issue on GitHub"
@@ -135,13 +135,13 @@ coffin_timer() {
 coffin_bail() {
   printf '%s\n' "$1" >&2
 
-  if [[ -f "$COFFIN_FILE" && "$COFFIN_STATUS" == "close" ]]; then
+  if [[ -f $COFFIN_FILE && $COFFIN_STATUS == "close" ]]; then
     $GPG -d "${GPG_OPTS[@]}" "$COFFIN_FILE" | tar x \
       || coffin_die "An unknown error has occured. Please raise an issue on GitHub"
     rm -f "$COFFIN_FILE" \
       || coffin_die "An unknown error has occured. Please raise an issue on GitHub"
     rmdir "$COFFIN_DIR" || false
-  elif [[ -f "$COFFIN_FILE" && "$COFFIN_STATUS" == "open" ]]; then
+  elif [[ -f $COFFIN_FILE && $COFFIN_STATUS == "open" ]]; then
     $GPG -d "${GPG_OPTS[@]}" "$COFFIN_FILE" \
       || coffin_die "An unknown error has occured. Please raise an issue on GitHub"
     tar x "${COFFIN_FILE%.gpg}" \
@@ -177,17 +177,17 @@ coffin_help() {
   printf '%s\n' "For more details, visit https://github.com/ayushnix/pass-coffin"
 }
 
-if [[ "$#" -eq 0 && "$COMMAND" == "coffin" ]]; then
+if [[ $# -eq 0 && $COMMAND == "coffin" ]]; then
   coffin_help
   exit 0
 fi
 
-while [[ "$#" -gt 0 ]]; do
+while [[ $# -gt 0 ]]; do
   _opt="$1"
   case "$_opt" in
     -t | --timer)
-      if [[ "$COMMAND" == "open" ]]; then
-        [[ "$#" -lt 2 ]] && {
+      if [[ $COMMAND == "open" ]]; then
+        [[ $# -lt 2 ]] && {
           printf '%s\n' "Please specify a valid systemd compatible time format" >&2
           exit 1
         }
@@ -199,7 +199,7 @@ while [[ "$#" -gt 0 ]]; do
       shift
       ;;
     --timer=*)
-      if [[ "$COMMAND" == "open" ]]; then
+      if [[ $COMMAND == "open" ]]; then
         COFFIN_TIMER=true
         COFFIN_TIME="${_opt##--timer=}"
       else
@@ -215,7 +215,7 @@ while [[ "$#" -gt 0 ]]; do
       exit 0
       ;;
     stop)
-      if [[ "$COMMAND" == "timer" ]]; then
+      if [[ $COMMAND == "timer" ]]; then
         break
       else
         coffin_die "invalid argument detected"
