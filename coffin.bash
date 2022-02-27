@@ -165,7 +165,7 @@ coffin_open() {
 
   # extract the files from the coffin
   # we've already checked if the coffin exists and if its signature is valid
-  $GPG -d "${GPG_OPTS[@]}" "$coffin_file" | tar x \
+  $GPG -d "${GPG_OPTS[@]}" "$coffin_file" 2> /dev/null | tar x 2> /dev/null \
     || coffin_die "unable to retrieve data from the coffin"
   set +o pipefail
 
