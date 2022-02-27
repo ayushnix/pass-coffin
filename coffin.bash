@@ -321,23 +321,20 @@ while [[ $# -gt 0 ]]; do
   case "$_opt" in
     -t | --timer)
       if [[ $COMMAND == "open" ]]; then
-        [[ $# -lt 2 ]] && {
-          printf '%s\n' "Please specify a valid systemd compatible time format" >&2
-          exit 1
-        }
-        COFFIN_TIMER=true
-        COFFIN_TIME="$2"
-      else
-        coffin_die "invalid argument detected"
+        if [[ $# -lt 2 ]]; then
+          coffin_die "please specify a valid systemd compatible time format"
+        fi
+        coffin_time="$2"
       fi
       shift
       ;;
     --timer=*)
       if [[ $COMMAND == "open" ]]; then
-        COFFIN_TIMER=true
-        COFFIN_TIME="${_opt##--timer=}"
-      else
-        coffin_die "invalid argument detected"
+        if [[ -n ${_opt##--timer=} ]]; then
+          coffin_time="${_opt##--timer=}"
+        else
+          coffin_die "please specify a valid systemd compatible time format"
+        fi
       fi
       ;;
     -h | --help)
@@ -345,9 +342,10 @@ while [[ $# -gt 0 ]]; do
       exit 0
       ;;
     -v | --version)
-      printf '%s\n' "$PROGRAM coffin version $COFFIN_VERSION"
+      printf "%s\n" "$PROGRAM coffin version $coffin_version"
       exit 0
       ;;
+    # ignore the stop argument and let timer.bash handle it
     stop)
       if [[ $COMMAND == "timer" ]]; then
         break
