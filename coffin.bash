@@ -215,22 +215,24 @@ coffin_open() {
 }
 
 coffin_timer() {
-  local choice="$1"
-  local status
-
-  status="$(systemctl --user is-active "$PROGRAM-coffin".timer)"
-  if [[ $status == "active" && -z $choice ]]; then
-    systemctl --user list-timers "$PROGRAM-coffin".timer \
-      || coffin_die "Unable to print the timer status"
-  elif [[ $status == "active" && $choice == "stop" ]]; then
-    systemctl --user stop "$PROGRAM-coffin".timer > /dev/null 2>&1 \
-      || coffin_die "Unable to stop the timer"
-    printf '%s\n' "[#] The timer to hide password store data has been stopped"
-  elif [[ $status == "inactive" && -z $choice ]]; then
-    coffin_die "The timer to hide password store isn't active"
-  else
-    coffin_die "An unknown error has occured. Please raise an issue on GitHub"
+  if ! command -v systemd-run > /dev/null 2>&1; then
+    coffin_die "systemd-run is not installed"
   fi
+
+  local choice="$1"
+  if systemctl --user --quiet is-active "$PROGRAM"-coffin.timer 2> /dev/null; then
+    if [[ -z $choice ]]; then
+      coffin_head 2 <(systemctl --user list-timers "$PROGRAM"-coffin.timer)
+    elif [[ $choice == "stop" ]]; then
+      systemctl --user stop "$PROGRAM"-coffin.timer > /dev/null 2>&1 \
+        || coffin_die "unable to stop the timer"
+      printf "%s\n" "the timer to create the coffin has been stopped"
+    fi
+  else
+    coffin_die "the timer to create the coffin isn't active"
+  fi
+
+  unset -v choice
 }
 
 coffin_head() {
