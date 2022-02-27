@@ -177,11 +177,24 @@ coffin_open() {
     coffin_warn "please delete $PREFIX/$coffin_dir manually if it exists"
   }
 
-  if "$COFFIN_TIMER"; then
-    systemd-run --user -E PASSWORD_STORE_DIR="$PREFIX" -E PASSWORD_STORE_ENABLE_EXTENSIONS=true \
-      --on-active="$COFFIN_TIME" --timer-property=AccuracySec=100ms --unit="$PROGRAM-coffin" -G \
-      "$(command -v "$PROGRAM")" close > /dev/null 2>&1 && flag=true \
-      || printf '%s\n' "Unable to start a timer to close the coffin" >&2
+  # if the environment variables are defined, they will be imported and if not, they will be blank
+  # thankfully, password-store.sh deals with this correctly
+  local timer_flag
+  if [[ -n $coffin_time ]]; then
+    if command -v systemd-run > /dev/null 2>&1; then
+      if systemd-run --user -E PASSWORD_STORE_DIR -E PASSWORD_STORE_ENABLE_EXTENSIONS \
+        -E PASSWORD_STORE_SIGNING_KEY -E PASSWORD_STORE_GPG_OPTS \
+        -E PASSWORD_STORE_EXTENSIONS_DIR --on-active="$coffin_time" \
+        --timer-property=AccuracySec=100ms --unit="$PROGRAM-coffin" \
+        -G "$(command -v "$PROGRAM")" close > /dev/null 2>&1; then
+        timer_flag=true
+      else
+        coffin_warn "unable to start a timer to create a coffin"
+      fi
+    else
+      coffin_warn "systemd-run is not installed"
+      coffin_warn "password store data will not be hidden inside a coffin automatically"
+    fi
   fi
 
   if "$flag"; then
