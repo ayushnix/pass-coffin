@@ -3,13 +3,15 @@
 # Copyright (C) 2021 Ayush Agarwal <ayushnix at fastmail dot com>
 #
 # pass coffin - Password Store Extension (https://www.passwordstore.org)
-# A pass extension that prevents metadata exposure by encrypting everything
+# A pass extension that prevents metadata exposure by encrypting the password
+# store directory
 # ------------------------------------------------------------------------------
 
 # list of variables and functions from password-store.sh used in this extension
 # PREFIX             - the location of the user password-store data
 # EXTENSIONS         - the location of user installed extensions
 # PROGRAM            - the name of password-store, pass
+# PASSWORD_STORE_SIGNING_KEY - sign the encrypted coffin to ensure data integrity and authenticity
 # set_gpg_recipients - verify the GPG keyfile and set up GPG for encryption
 
 # initialize the global variables
@@ -278,24 +280,35 @@ coffin_die() {
 }
 
 coffin_help() {
-  printf '%s\n' "$PROGRAM coffin - hide password store in a coffin" ""
-  printf '%s\n' "If you're using $PROGRAM coffin for the first time, execute" ""
-  printf '\t%s\n' "\$ $PROGRAM close" ""
-  printf '%s\n' "as the first step" ""
-  printf '%s\n' "Usage:"
-  printf '%s\n' "$PROGRAM close"
-  printf '%s\n' "    hide password store data by closing (creating) the coffin"
-  printf '%s\n' "$PROGRAM open [-t <time>|--timer <time>|--timer=<time>]"
-  printf '%s\n' "    reveal password store data by opening the coffin"
-  printf '%s\n' "    optionally, provide a valid systemd compatible time after which the coffin"
-  printf '%s\n' "    will be automatically closed"
-  printf '%s\n' "$PROGRAM timer [stop]"
-  printf '%s\n' "    show the time left before password store data is hidden"
-  printf '%s\n' "    'pass timer stop' will stop any active timers started by 'pass open -t'" ""
-  printf '%s\n' "Options: $PROGRAM coffin [-h|--help] [-v|--version]"
-  printf '%s\n' "-h, --help:    print this help menu"
-  printf '%s\n' "-v, --version: print the version of $PROGRAM coffin" ""
-  printf '%s\n' "For more details, visit https://github.com/ayushnix/pass-coffin"
+  printf "%s" "\
+$PROGRAM coffin - hide password store data inside a coffin
+
+usage:
+    $PROGRAM close
+        create a tar archive with the password store data and encrypt it
+        optionally, if PASSWORD_STORE_SIGNING_KEY is set, sign the encrypted
+        tar archive
+
+    $PROGRAM open [ -t <time>, --timer <time>, --timer=<time> ]
+        decrypt and extract the encrypted tar archive and, optionally, close it
+        automatically after <time>
+        to use the <time> functionality, systemd-run must be installed and
+        <time> must be valid systemd.time(7)
+        if PASSWORD_STORE_SIGNING_KEY is set, the encrypted tar archive must
+        have a valid detached signature
+
+    $PROGRAM timer [stop]
+        show the state of the timer started using $PROGRAM open -t
+        optionally, stop the timer before its scheduled time
+
+    $PROGRAM coffin [-h | --help] [-v | --version]
+        -h, --help: print this help menu
+        -v, --version: print the version of $PROGRAM coffin
+
+        show the help menu by default and show the version if -v is given
+
+for more details, visit https://github.com/ayushnix/pass-coffin
+"
 }
 
 if [[ $# -eq 0 && $COMMAND == "coffin" ]]; then
