@@ -114,13 +114,11 @@ coffin_close() {
 }
 
 coffin_open() {
-  COFFIN_STATUS="open"
-
-  local pwd flag
-  flag=false
-
-  cd "$PREFIX" > /dev/null 2>&1 \
-    || coffin_die "Unable to find a password store directory"
+  # if the PREFIX (PASSWORD_STORE_DIR) exists, cd into it
+  if [[ -d $PREFIX ]]; then
+    cd "$PREFIX" > /dev/null 2>&1 \
+      || coffin_die "unable to open the password store dir"
+  fi
 
   if [[ -f $COFFIN_FILE ]]; then
     $GPG -d "${GPG_OPTS[@]}" "$COFFIN_FILE" | tar x \
