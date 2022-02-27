@@ -141,6 +141,32 @@ coffin_open() {
     fi
   fi
 
+  # check if $coffin_file.sig is valid, if it exists
+  # could've used the verify_file function but we need custom output for
+  # pass_coffin
+  set -o pipefail
+  local fgprnt key sigflag
+  if [[ -n $PASSWORD_STORE_SIGNING_KEY ]]; then
+    if ! [[ -f "$coffin_file".sig ]]; then
+      coffin_die "unable to find the signature for the coffin"
+    fi
+    sigflag=false
+    fgprnt="$("$GPG" "${GPG_OPTS[@]}" --verify --status-fd=1 "$coffin_file".sig \
+      "$coffin_file" 2> /dev/null \
+      | sed -n 's/^\[GNUPG:\] VALIDSIG [A-F0-9]\{40\} .* \([A-F0-9]\{40\}\)$/\1/p')"
+    if [[ -z $fgprnt ]]; then
+      coffin_die "the signature for the coffin is invalid"
+    else
+      sigflag=true
+    fi
+  fi
+
+  # extract the files from the coffin
+  # we've already checked if the coffin exists and if its signature is valid
+  $GPG -d "${GPG_OPTS[@]}" "$coffin_file" | tar x \
+    || coffin_die "unable to retrieve data from the coffin"
+  set +o pipefail
+
   rm -f "$COFFIN_FILE" || {
     printf '%s' "Unable to delete the encrypted coffin." >&2
     printf '%s\n' " Please delete $PREFIX/$COFFIN_FILE manually if it exists." >&2
