@@ -167,13 +167,14 @@ coffin_open() {
     || coffin_die "unable to retrieve data from the coffin"
   set +o pipefail
 
-  rm -f "$COFFIN_FILE" || {
-    printf '%s' "Unable to delete the encrypted coffin." >&2
-    printf '%s\n' " Please delete $PREFIX/$COFFIN_FILE manually if it exists." >&2
+  # remove the coffin_file and coffin_dir
+  rm -f "$coffin_file" "$coffin_file".sig || {
+    coffin_warn "unable to delete the coffin"
+    coffin_warn "please delete $PREFIX/$coffin_file manually if it exists"
   }
-  rmdir "$COFFIN_DIR" || {
-    printf '%s' "Unable to delete the directory which holds the coffin." >&2
-    printf '%s\n' " Please delete $PREFIX/$COFFIN_DIR manually if it exists." >&2
+  rmdir "$coffin_dir" || {
+    coffin_warn "unable to delete the directory which holds the coffin"
+    coffin_warn "please delete $PREFIX/$coffin_dir manually if it exists"
   }
 
   if "$COFFIN_TIMER"; then
