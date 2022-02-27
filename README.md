@@ -67,8 +67,8 @@ Since `pass-coffin` has a similar interface as `pass-tomb`, both of these passwo
   tar](https://www.freebsd.org/cgi/man.cgi?query=tar&sektion=1) should work as well)
 - [GNU find](https://www.gnu.org/software/findutils/) (although [busybox
   find](https://busybox.net/downloads/BusyBox.html#find), [FreeBSD
-  tar](https://www.freebsd.org/cgi/man.cgi?query=find&sektion=1&manpath=FreeBSD+13.0-RELEASE+and+Ports),
-  and [OpenBSD find](https://man.openbsd.org/find.1) should also work)
+  find](https://www.freebsd.org/cgi/man.cgi?query=find&sektion=1), and [OpenBSD
+  find](https://man.openbsd.org/find.1) should also work)
 - [systemd-run](https://github.com/systemd/systemd) (optional, if you want to use the timer
   functionality)
 
