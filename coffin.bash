@@ -8,11 +8,11 @@
 # ------------------------------------------------------------------------------
 
 # list of variables and functions from password-store.sh used in this extension
-# PREFIX             - the location of the user password-store data
-# EXTENSIONS         - the location of user installed extensions
-# PROGRAM            - the name of password-store, pass
+# PREFIX                     - the location of the directory where pass data is kept
+# EXTENSIONS                 - the location of user installed extensions
+# PROGRAM                    - the name of the pass script itself
 # PASSWORD_STORE_SIGNING_KEY - sign the encrypted coffin to ensure data integrity and authenticity
-# set_gpg_recipients - verify the GPG keyfile and set up GPG for encryption
+# set_gpg_recipients         - verify the GPG keyfile and set up GPG for encryption
 
 # initialize the global variables
 readonly coffin_version="1.2.0"
