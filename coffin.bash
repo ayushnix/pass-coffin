@@ -120,11 +120,25 @@ coffin_open() {
       || coffin_die "unable to open the password store dir"
   fi
 
-  if [[ -f $COFFIN_FILE ]]; then
-    $GPG -d "${GPG_OPTS[@]}" "$COFFIN_FILE" | tar x \
-      || coffin_bail "Unable to retrieve data from the encrypted coffin"
-  else
-    coffin_die "Unable to find an encrypted GPG coffin"
+  # check if coffin file is present and if it isn't present, check if .gpg
+  # files are present in the password store and warn the user that password
+  # store is already decrypted
+  # only if no coffin and no .gpg files are found in the password store, throw
+  # and error and print a scary message
+  local -a num_files
+  local extbase
+  extbase="$(coffin_basename "$EXTENSIONS")"
+  if ! [[ -f $coffin_file ]]; then
+    mapfile -t num_files < <(find . -depth ! -name '.' ! -name '..' \
+      ! -path "./$coffin_dir" ! -path "./$coffin_file" ! -path "./$extbase" \
+      ! -path "./$extbase/*" -name "*.gpg" -print 2> /dev/null)
+    if [[ ${#num_files[@]} -gt 0 ]]; then
+      coffin_warn "password store data is probably not inside a coffin"
+      coffin_warn "${#num_files[@]} password files found"
+      exit 1
+    else
+      coffin_die "unable to find a password store coffin"
+    fi
   fi
 
   rm -f "$COFFIN_FILE" || {
