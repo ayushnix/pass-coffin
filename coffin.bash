@@ -197,12 +197,21 @@ coffin_open() {
     fi
   fi
 
-  if "$flag"; then
-    printf '%s\n' "[#] Password Store data has been retrieved from the GPG coffin"
-    printf '%s\n' "[#] Password Store will be hidden inside a coffin after $COFFIN_TIME"
-  else
-    printf '%s\n' "[#] Password Store data has been retrieved from the GPG coffin"
+  if [[ $sigflag == true ]] && [[ $timer_flag == true ]]; then
+    printf "%s\n" "the signature for the coffin is valid"
+    printf "%s\n" "password store data has been retrieved from the coffin"
+    printf "%s\n" "password store data will be hidden inside a coffin after $coffin_time"
+  elif [[ $sigflag == true ]] && [[ -z $timer_flag ]]; then
+    printf "%s\n" "the signature for the coffin is valid"
+    printf "%s\n" "password store data has been retrieved from the coffin"
+  elif [[ -z $sigflag ]] && [[ $timer_flag == true ]]; then
+    printf "%s\n" "password store data has been retrieved from the coffin"
+    printf "%s\n" "password store data will be hidden inside a coffin after $coffin_time"
+  elif [[ -z $sigflag ]] && [[ -z $timer_flag ]]; then
+    printf "%s\n" "password store data has been retrieved from the coffin"
   fi
+
+  unset -v num_files fgprnt key sigflag timer_flag extbase
 }
 
 coffin_timer() {
