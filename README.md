@@ -1,4 +1,4 @@
-[<img src="https://gitlab.com/uploads/-/system/project/avatar/3157196/logo.png" align="right" height="110"/>][github-link]
+<img src="https://gitlab.com/uploads/-/system/project/avatar/3157196/logo.png" align="right" height="110"/>
 
 ## pass-coffin
 
