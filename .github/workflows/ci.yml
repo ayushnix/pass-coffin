@@ -1,6 +1,18 @@
 ---
 name: run shellcheck and shfmt
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'coffin.bash'
+      - 'open.bash'
+      - 'close.bash'
+      - 'timer.bash'
+  pull_request:
+    paths:
+      - 'coffin.bash'
+      - 'open.bash'
+      - 'close.bash'
+      - 'timer.bash'
 jobs:
   lint:
     name: use shellcheck to lint pass-coffin
