@@ -16,8 +16,8 @@ the authors of these extensions for making `pass-coffin` possible.
 
 ## Why use `pass-coffin`?
 
-- `pass-coffin` doesn't depend on a [3000+ line ZSH script][5] and it doesn't [need root access]
-  [6] to work like `pass-tomb` does
+- `pass-coffin` doesn't depend on a [3000+ line ZSH script][5] and it doesn't [need root access][6]
+  to work like `pass-tomb` does
 
 - if `PASSWORD_STORE_SIGNING_KEY` is set, `pass-coffin` will sign the encrypted coffin file as well
   which ensures data integrity and authenticity
