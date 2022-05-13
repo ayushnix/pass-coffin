@@ -9,7 +9,8 @@ Because of how `pass` works, directory and file names aren't encrypted by defaul
 access to your computer can see which websites you use and your usernames on those websites. This is
 different from how password managers like [keepassxc][2] work by keeping your entire password store
 database inside an encrypted file and can also automatically lock access to the application itself
-after a certain amount of time. `pass-coffin` is meant to provide similar features to `pass`.
+after a certain amount of time. `pass-coffin` has been created to provide these missing features to
+`pass`.
 
 `pass-coffin` is heavily inspired from [pass-tomb][3] and [pass-grave][4]. A lot of credit goes to
 the authors of these extensions for making `pass-coffin` possible.
@@ -55,10 +56,10 @@ Since `pass-coffin` has a similar interface as `pass-tomb`, both of these passwo
 ### Dependencies
 
 - [pass][11]
-- [GNU tar][12] (although [busybox tar][13] and [FreeBSD tar][14] should work as well)
-- [GNU find][15] (although [busybox find][16], [FreeBSD find][17], and [OpenBSD find][18] should
+- [GNU tar][12] ([busybox tar][13] and [FreeBSD tar][14] should work as well)
+- [GNU find][15] ([busybox find][16], [FreeBSD find][17], and [OpenBSD find][18] should
   also work)
-- [systemd-run][19] (optional, if you want to use the timer functionality)
+- [systemd-run][19] (_optional_, if you want to use the timer functionality)
 
 ### Arch Linux
 
