@@ -188,7 +188,7 @@ coffin_open() {
         -E PASSWORD_STORE_SIGNING_KEY -E PASSWORD_STORE_GPG_OPTS \
         -E PASSWORD_STORE_EXTENSIONS_DIR --on-active="$coffin_time" \
         --timer-property=AccuracySec=100ms --unit="$PROGRAM-coffin" \
-        -G "$(command -v "$PROGRAM")" close > /dev/null 2>&1; then
+        -G --property=Type=exec "$(command -v "$PROGRAM")" close > /dev/null 2>&1; then
         timer_flag=true
       else
         coffin_warn "unable to start a timer to create a coffin"
