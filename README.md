@@ -153,8 +153,8 @@ yourscreenlockprogram || "$HOME"/.local/bin/screenlock_script
 ```
 
 to try and respawn your screen lock program if it exits abnormally. Alternatively, you could switch
-to a wayland compositor and use a screen lock program which supports [ext-session-lock-v1][25],
-which should hopefully provide a secure screen lock utility for the Linux desktop.
+to a wayland compositor and a screen lock program which support [ext-session-lock-v1][25], which
+should hopefully provide a secure screen lock utility for the Linux desktop.
 
 You can also run `pass close` before your system goes to sleep and before it is issued a
 shutdown/reboot command. On Linux distributions with systemd, [systemd-lock-handler][26] can help
