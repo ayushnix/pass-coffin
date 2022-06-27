@@ -77,8 +77,11 @@ coffin_close() {
 
   chmod 400 "$coffin_file" \
     || coffin_warn "unable to make the coffin a readonly file"
-  chmod 400 "$coffin_file.sig" \
-    || coffin_warn "unable to make the coffin signature a readonly file"
+
+  if [[ -n $PASSWORD_STORE_SIGNING_KEY ]]; then
+    chmod 400 "$coffin_file.sig" \
+      || coffin_warn "unable to make the coffin signature a readonly file"
+  fi
 
   # delete the remaining data inside PREFIX (PASSWORD_STORE_DIR)
   # CAVEAT: pass init supports specifying different .gpg-id files for different
