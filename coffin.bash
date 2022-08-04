@@ -310,7 +310,10 @@ usage:
 
         show the help menu by default and show the version if -v is given
 
-for more details, visit https://github.com/ayushnix/pass-coffin
+for reporting bugs or feedback, visit one of the following git forge providers
+https://sr.ht/~ayushnix/pass-coffin
+https://codeberg.org/ayushnix/pass-coffin
+https://github.com/ayushnix/pass-coffin
 "
 }
 
